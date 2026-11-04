@@ -79,6 +79,8 @@ struct Snapshot {
     var countdownLabel = ""
     var month: Double = 0
     var remainingDays = 0
+    var totalWorkdays = 0
+    var monthProgress: Double = 0
     var status: WorkStatus = .before
     var slogan = ""
 
@@ -117,6 +119,7 @@ struct Snapshot {
         snap.hourly = snap.daily / (total / 3600)
         snap.perSecond = snap.hourly / 3600
         snap.remainingDays = remaining
+        snap.totalWorkdays = totalWorkdays
 
         // 今日进度
         let comps = cal.dateComponents([.hour, .minute, .second, .nanosecond], from: now)
@@ -135,6 +138,7 @@ struct Snapshot {
             snap.status = .dayOff
         }
         snap.today = snap.daily * snap.progress
+        snap.monthProgress = totalWorkdays > 0 ? (Double(passed) + snap.progress) / Double(totalWorkdays) : 0
         snap.month = snap.daily * Double(passed) + snap.today
 
         switch snap.status {
@@ -244,23 +248,19 @@ struct WidgetView: View {
             .font(.system(size: 13, weight: .medium)).monospacedDigit()
             .foregroundColor(.white.opacity(0.85))
 
-            GeometryReader { g in
-                ZStack(alignment: .leading) {
-                    Capsule().fill(Color.white.opacity(0.1))
-                    Capsule()
-                        .fill(LinearGradient(colors: [accentGreen, .yellow], startPoint: .leading, endPoint: .trailing))
-                        .frame(width: max(0, g.size.width * min(s.progress, 1)))
-                }
-            }
-            .frame(height: 7)
+            progressBar(s.progress, colors: [accentGreen, .yellow], height: 7)
 
             HStack {
                 Text("本月已赚 " + money(s.month, 2))
                 Spacer()
-                Text("本月还剩 \(s.remainingDays) 个工作日")
+                Text(String(format: "%.1f%%", s.monthProgress * 100))
+                Spacer()
+                Text("还剩 \(s.remainingDays) 个工作日")
             }
             .font(.system(size: 12)).monospacedDigit()
             .foregroundColor(.white.opacity(0.7))
+
+            progressBar(s.monthProgress, colors: [Color(red: 0.3, green: 0.65, blue: 1.0), Color(red: 0.7, green: 0.45, blue: 1.0)], height: 5)
 
             Text(s.slogan)
                 .font(.system(size: 12))
@@ -282,6 +282,18 @@ struct WidgetView: View {
             Divider()
             Button("退出") { NSApp.terminate(nil) }
         }
+    }
+
+    private func progressBar(_ value: Double, colors: [Color], height: CGFloat) -> some View {
+        GeometryReader { g in
+            ZStack(alignment: .leading) {
+                Capsule().fill(Color.white.opacity(0.1))
+                Capsule()
+                    .fill(LinearGradient(colors: colors, startPoint: .leading, endPoint: .trailing))
+                    .frame(width: max(0, g.size.width * min(value, 1)))
+            }
+        }
+        .frame(height: height)
     }
 
     private func stat(_ title: String, _ value: String) -> some View {

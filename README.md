@@ -2,6 +2,16 @@
 
 一个 macOS 桌面悬浮窗 + 菜单栏小工具，实时显示今天和本月已经赚了多少钱。
 
+<p align="center">
+  <img src="screenshots/widget.png" width="360" alt="桌面悬浮窗">
+</p>
+
+| 菜单栏 | 设置 |
+| :---: | :---: |
+| <img src="screenshots/menubar.png" alt="菜单栏"> | <img src="screenshots/settings.png" width="380" alt="设置窗口"> |
+
+> 截图中的月薪为示例数据（¥10,000）。
+
 - 今日已赚（精确到 0.001 元，每 0.1 秒刷新）
 - 每秒进账 / 时薪 / 日薪
 - 已工作时长、进度条、距下班倒计时
@@ -33,3 +43,4 @@ xattr -dr com.apple.quarantine /Applications/工资计时器.app
 
 - 拖动悬浮窗可移动位置
 - 右键悬浮窗或点击菜单栏图标：设置 / 隐藏悬浮窗 / 退出
+- 应用运行时再次双击打开，会弹出设置窗口

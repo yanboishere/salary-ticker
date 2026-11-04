@@ -393,6 +393,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         updateStatusTitle()
     }
 
+    /// 应用已在运行时再次双击打开，弹出设置窗口
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        openSettings()
+        return false
+    }
+
     private func setupPanel() {
         let host = DraggableHostingView(rootView: WidgetView())
         host.frame.size = host.fittingSize
